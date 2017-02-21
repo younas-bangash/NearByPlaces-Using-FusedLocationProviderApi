@@ -53,7 +53,7 @@ public class Configuration {
      * Google API key used in google places api
      */
 
-    public static final String API_KEY = "AIzaSyAJbaKH0QdGZrHmAvKRORpP5j2uvQXek8U";
+    public static final String API_KEY = "<Put Your Key Here>";
 
 
     /**
