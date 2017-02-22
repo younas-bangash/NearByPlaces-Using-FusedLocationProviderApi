@@ -1,7 +1,9 @@
 package example.nearmeplaces;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -20,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
@@ -102,10 +105,44 @@ public class MainActivity extends AppCompatActivity implements
         recList = (RecyclerView) findViewById(R.id.placeslist);
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
+        startRegistrationService();
+
 
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
         // API.
-        buildGoogleApiClient();
+        //buildGoogleApiClient();
+    }
+
+    private void startRegistrationService() {
+        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+        int code = api.isGooglePlayServicesAvailable(this);
+        if (code == ConnectionResult.SUCCESS) {
+            onActivityResult(10, Activity.RESULT_OK, null);
+        } else if (api.isUserResolvableError(code) && api.showErrorDialogFragment(this, code, 10)) {
+            // wait for onActivityResult call (see below)
+        } else {
+            Toast.makeText(this, api.getErrorString(code), Toast.LENGTH_LONG).show();
+            if(code == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED){
+                Toast.makeText(this,"please udpate your google play service",Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(this, "please download the google play service", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+            case 10:
+                if (resultCode == Activity.RESULT_OK) {
+                    buildGoogleApiClient();
+                }
+                break;
+
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void DisplayResultOnList() {
