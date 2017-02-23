@@ -4,7 +4,18 @@
     <string name="longitude_label">Longitude</string>
     <string name="last_update_time_label">Last location update time</string>
 
-    <string name="start_updates">Start updates</string>
+    <!-- Main App Label -->
+    <string name="health_label">HEALTH</string>
+    <string name="education_label">EDUCATION</string>
+    <string name="shopping_label">SHOPPING</string>
+    <string name="sports_label">SPORTS</string>
+    <string name="travel_label">TRAVEL</string>
+    <string name="restaurant_label">RESTAURANT</string>
+    <string name="finance_label">FINANCE</string>
+    <string name="religion_label">RELIGION</string>
+
+    <string name="start_updates">Show Places</string>
     <string name="stop_updates">Stop updates</string>
     <string name="location_updated_message">Location updated</string>
+    <string name="show_places">Show Places</string>
 </resources>

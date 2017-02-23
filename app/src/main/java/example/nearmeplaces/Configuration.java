@@ -1,6 +1,7 @@
 package example.nearmeplaces;
 
 import android.content.Context;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -46,14 +47,14 @@ public class Configuration {
     /**
      * Type of places to show in result
      */
-    public static final String TYPE_OF_PLACES = "health|hospital|pharmacy|doctor|dentist";
+    public static String TYPE_OF_PLACES = "";
 
 
     /**
      * Google API key used in google places api
      */
 
-    public static final String API_KEY = "<Put Your Key Here>";
+    public static final String API_KEY = "AIzaSyD-mggb9gJ853WM-uIUx59fJ98TO4yZkvk";
 
 
     /**
@@ -65,6 +66,17 @@ public class Configuration {
         NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
     }
+
+
+    /**
+     * Function to check the GPS is enabled
+     * */
+    public static boolean isGPSEnabled(Context mContext){
+        LocationManager locationManager = (LocationManager)
+                mContext.getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
 
 
 }

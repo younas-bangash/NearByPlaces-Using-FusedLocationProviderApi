@@ -11,7 +11,8 @@
      limitations under the License.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -22,30 +23,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/placeslist"
+        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!--<TextView-->
-        <!--android:id="@+id/latitude_text"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginLeft="@dimen/small_margin"-->
-        <!--android:layout_marginStart="@dimen/small_margin"-->
-        <!--android:textSize="@dimen/default_text_size" />-->
 
-    <!--<TextView-->
-        <!--android:id="@+id/longitude_text"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginLeft="@dimen/small_margin"-->
-        <!--android:layout_marginStart="@dimen/small_margin"-->
-        <!--android:textSize="@dimen/default_text_size" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/last_update_time_text"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginLeft="@dimen/small_margin"-->
-        <!--android:layout_marginStart="@dimen/small_margin"-->
-        <!--android:textSize="@dimen/default_text_size" />-->
 </LinearLayout>
