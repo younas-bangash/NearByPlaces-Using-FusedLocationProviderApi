@@ -42,6 +42,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".PlacesListActicity"/>
+        <activity android:name=".MapPane"/>
     </application>
 
 </manifest>

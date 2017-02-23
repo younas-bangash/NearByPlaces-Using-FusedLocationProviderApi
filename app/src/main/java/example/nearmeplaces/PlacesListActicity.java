@@ -1,16 +1,19 @@
 package example.nearmeplaces;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -71,6 +74,8 @@ public class PlacesListActicity extends AppCompatActivity implements
      */
     protected GoogleApiClient mGoogleApiClient;
 
+    FloatingActionButton btnShowOnMap;
+
     /**
      * Stores parameters for requests to the FusedLocationProviderApi.
      */
@@ -94,6 +99,24 @@ public class PlacesListActicity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         recList = (RecyclerView) findViewById(R.id.placeslist);
+        btnShowOnMap = (FloatingActionButton) findViewById(R.id.btn_show_map);
+        /** Button click event for shown on map */
+        btnShowOnMap.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                Intent i = new Intent(getApplicationContext(),
+                        MapPane.class);
+                // Sending user current geo location
+                i.putExtra("user_latitude", Double.toString(mCurrentLocation.getLatitude()));
+                i.putExtra("user_longitude", Double.toString(mCurrentLocation.getLongitude()));
+
+                // passing near places to map activity
+                i.putExtra("near_places", nearPlaces);
+                // staring activity
+                startActivity(i);
+            }
+        });
 
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
@@ -233,66 +256,8 @@ public class PlacesListActicity extends AppCompatActivity implements
     }
 
     private void GetPlaces(Location current_latitude) {
-
+        mCurrentLocation = current_latitude;
         new LoadPlaces().execute();
-
-
-
-
-
-
-        /*pDialog = new ProgressDialog(PlacesListActicity.this);
-        pDialog.setCancelable(false);
-        pDialog.setMessage(Html.fromHtml("<b>NearBy Places</b><br/>Getting Near Places..."));
-        pDialog.show();
-        String NEARBY_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
-                "location="+ current_latitude.getLatitude()+","+ current_latitude.getLongitude()
-                +"&radius="+Configuration.RADIUS_FOR_PLACES_SEARCH
-                +"&types="+Configuration.TYPE_OF_PLACES
-                +"&language=en"
-                +"$limit=15"
-                +"&key="+Configuration.API_KEY;
-
-        Log.e("Response:", NEARBY_URL);
-        final JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, NEARBY_URL,
-                null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.e("Response:", response.toString());
-                try {
-                    String status = response.getString("status");
-                    Log.e("Response status :", status);
-                    switch (status){
-                        case "OK":
-                            placesListItems.clear();
-                            JSONArray arrayObject = response.getJSONArray("results");
-                            for (int i = 0; i < arrayObject.length(); i++) {
-                                JSONObject c = arrayObject.getJSONObject(i);
-                                placesListItems.add(c.getString("name"));
-                            }
-                            DisplayResultOnList();
-                            break;
-                        default:
-                            Toast.makeText(PlacesListActicity.this, status, Toast.LENGTH_SHORT).show();
-                            pDialog.dismiss();
-                            break;
-                    }
-                } catch (JSONException e) {
-                    pDialog.dismiss();
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("Error: ", "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Adding request to request queue
-        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);*/
-
     }
 
     @Override
@@ -426,8 +391,6 @@ public class PlacesListActicity extends AppCompatActivity implements
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
             pDialog.show();
-
-
         }
 
         /**

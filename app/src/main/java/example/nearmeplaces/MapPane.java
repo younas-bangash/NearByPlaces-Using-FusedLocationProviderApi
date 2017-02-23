@@ -3,7 +3,6 @@ package example.nearmeplaces;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,16 +15,12 @@ public class MapPane extends AppCompatActivity {
     GoogleMap mMap;
     PlacesList nearPlaces;
     double latitude,longitude;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.map_places);        toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setContentView(R.layout.map_places);
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-
         // Getting intent data
         Intent i = getIntent();
         // Users current geo location
@@ -37,7 +32,7 @@ public class MapPane extends AppCompatActivity {
 
         mMap.addMarker(new MarkerOptions()
                 .position(user_location)
-                .title("This is You")
+                .title("Your Location")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.on)));
 
         // check for null in case it is null
@@ -61,8 +56,5 @@ public class MapPane extends AppCompatActivity {
 
         // Zoom out to zoom level 10, animating with a duration of 2 seconds.
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
-
-
     }
-
 }
