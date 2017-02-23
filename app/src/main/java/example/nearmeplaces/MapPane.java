@@ -20,6 +20,8 @@ public class MapPane extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_places);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         // Getting intent data
         Intent i = getIntent();

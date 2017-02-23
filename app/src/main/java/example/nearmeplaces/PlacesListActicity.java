@@ -98,6 +98,8 @@ public class PlacesListActicity extends AppCompatActivity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         recList = (RecyclerView) findViewById(R.id.placeslist);
         btnShowOnMap = (FloatingActionButton) findViewById(R.id.btn_show_map);
         /** Button click event for shown on map */
@@ -388,8 +390,8 @@ public class PlacesListActicity extends AppCompatActivity implements
             super.onPreExecute();
             pDialog = new ProgressDialog(PlacesListActicity.this);
             pDialog.setMessage(Html.fromHtml("<b>Searching</b><br/>Please Wait"));
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(false);
+            //pDialog.setIndeterminate(false);
+            //pDialog.setCancelable(false);
             pDialog.show();
         }
 
@@ -407,6 +409,7 @@ public class PlacesListActicity extends AppCompatActivity implements
 
 
             } catch (Exception e) {
+                pDialog.dismiss();
                 e.printStackTrace();
             }
             return null;
