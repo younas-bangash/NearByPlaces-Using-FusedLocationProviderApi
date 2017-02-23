@@ -3,6 +3,7 @@ package example.nearmeplaces;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -12,11 +13,6 @@ import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -24,10 +20,6 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -51,6 +43,8 @@ public class PlacesListActicity extends AppCompatActivity implements
     protected static final String TAG = "location-updates-sample";
 
     public static ProgressDialog pDialog;
+    GooglePlaces googlePlaces;
+    PlacesList nearPlaces;
     ArrayList<String> placesListItems = new ArrayList<>();
     PlaceItemAdapter adapter;
     RecyclerView recList;
@@ -239,7 +233,15 @@ public class PlacesListActicity extends AppCompatActivity implements
     }
 
     private void GetPlaces(Location current_latitude) {
-        pDialog = new ProgressDialog(PlacesListActicity.this);
+
+        new LoadPlaces().execute();
+
+
+
+
+
+
+        /*pDialog = new ProgressDialog(PlacesListActicity.this);
         pDialog.setCancelable(false);
         pDialog.setMessage(Html.fromHtml("<b>NearBy Places</b><br/>Getting Near Places..."));
         pDialog.show();
@@ -289,7 +291,7 @@ public class PlacesListActicity extends AppCompatActivity implements
         });
 
         // Adding request to request queue
-        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);*/
 
     }
 
@@ -406,5 +408,103 @@ public class PlacesListActicity extends AppCompatActivity implements
         savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
         savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    /**
+     * Background Async Task to Load Google places
+     */
+    class LoadPlaces extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(PlacesListActicity.this);
+            pDialog.setMessage(Html.fromHtml("<b>Searching</b><br/>Please Wait"));
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+
+
+        }
+
+        /**
+         * getting Places JSON
+         */
+        protected String doInBackground(String... args) {
+            // creating Places class object
+            googlePlaces = new GooglePlaces();
+            try {
+                // get nearest places
+                nearPlaces = googlePlaces.search(mCurrentLocation.getLatitude(),
+                        mCurrentLocation.getLongitude(),  Configuration.RADIUS_FOR_PLACES_SEARCH,
+                        Configuration.TYPE_OF_PLACES);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         * and show the data in UI
+         * Always use runOnUiThread(new Runnable()) to update UI from background
+         * thread, otherwise you will get error
+         * *
+         */
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all products
+            pDialog.dismiss();
+            // updating UI from Background Thread
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    // Get json response status
+                    String status = nearPlaces.status;
+
+                    // Check for all possible status
+                    if (status.equals("OK")) {
+                        // Successfully got places details
+                        if (nearPlaces.results != null) {
+                            // loop through each place
+                            for (Place p : nearPlaces.results) {
+
+
+                                // Place reference won't display in listview - it will be hidden
+                                // Place reference is used to get "place full details"
+//                                map.put("KEY_REFERENCE", p.reference);
+//                                // Place name
+//                                map.put("KEY_NAME", p.name);
+
+                                // adding HashMap to ArrayList
+                                placesListItems.add(p.name);
+                                DisplayResultOnList();
+                            }
+                        }
+                        pDialog.dismiss();
+                    } else if (status.equals("ZERO_RESULTS")) {
+                        displayerrormessage("Sorry no places found. Try to increase search radius");
+                    } else if (status.equals("UNKNOWN_ERROR")) {
+                        displayerrormessage("Sorry unknown error occured. Try again");
+                    } else if (status.equals("OVER_QUERY_LIMIT")) {
+                        displayerrormessage("Query over limit. Check back in a few minutes");
+                    } else if (status.equals("REQUEST_DENIED")) {
+                        displayerrormessage("Sorry error occured. Request denied");
+                    } else if (status.equals("INVALID_REQUEST")) {
+                        displayerrormessage("Sorry error occured. Request invalid");
+                    } else {
+                        displayerrormessage("Sorry, Unknown error occured");
+                    }
+                }
+            });
+        }
+    }
+
+    public void displayerrormessage(String message){
+        pDialog.dismiss();
+        Toast.makeText(PlacesListActicity.this, message,Toast.LENGTH_SHORT).show();
     }
 }

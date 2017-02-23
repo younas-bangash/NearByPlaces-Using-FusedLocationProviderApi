@@ -14,11 +14,9 @@ import android.widget.Toast;
 import static example.nearmeplaces.Configuration.TYPE_OF_PLACES;
 
 public class MainActivity extends AppCompatActivity {
-
     private static final String TAG = "MainActivity";
     private boolean mPermissionGranted = false;
     private boolean mGooglePlacesOldVersion = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

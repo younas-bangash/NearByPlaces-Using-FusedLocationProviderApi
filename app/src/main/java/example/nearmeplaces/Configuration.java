@@ -35,7 +35,7 @@ public class Configuration {
     /**
      * Searching radius for google places
      */
-    public static final int RADIUS_FOR_PLACES_SEARCH = 500;
+    public static int RADIUS_FOR_PLACES_SEARCH = 500;
 
 
     /**
